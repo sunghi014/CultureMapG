@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CultureMapG</string>
+    <string name="title_activity_maps">컬쳐맵</string>
+    <string name="action_settings">설정</string>
+</resources>
