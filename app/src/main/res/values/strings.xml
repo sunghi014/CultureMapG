@@ -2,4 +2,7 @@
     <string name="app_name">CultureMapG</string>
     <string name="title_activity_maps">컬쳐맵</string>
     <string name="action_settings">설정</string>
+    <string name="alertDialog_permission_title">사용자 위치 접근</string>
+    <string name="alertDialog_permission_message">현재 앱에서 지도에서 사용자의 위치를 표시하려면, 위치 접근을 허용해야 합니다.</string>
+    <string name="bt_close">닫기</string>
 </resources>
