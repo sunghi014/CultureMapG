@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="@android:anim/accelerate_decelerate_interpolator"
+    >
+    <translate
+        android:fromXDelta="0%p"
+        android:toXDelta="10%p"
+        android:duration="3000"
+        android:repeatCount="0"
+        android:fillAfter="false"
+        />
+</set>
+
+
+<!--
+<animation-list
+
+    android:oneshot="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/loading1"
+        android:duration="200" />
+
+    <item
+        android:drawable="@drawable/loading2"
+        android:duration="200" />
+
+    <item
+        android:drawable="@drawable/loading3"
+        android:duration="200" />
+
+
+
+</animation-list>
+    -->
