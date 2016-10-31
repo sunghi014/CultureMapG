@@ -2,6 +2,7 @@ package com.storybox.culturemapg;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -38,9 +39,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private AQuery aq = new AQuery( this );     //php 통신용 객체
     private PlacePosition[] placePositions;     //지도에 위치 표시하기 위한 객체 배열
     public int numMarkers;
-    private String serverLocation;
-    private String serverQueryLocation;
-    public Place place;
+    private String serverLocation, serverQueryLocation;
+    public SimplePlaceInfo simplePlaceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
         //위치좌표 셋팅
         LatLng acc = new LatLng(35.147, 126.920); //아시아문화전당
@@ -110,7 +111,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                getPlaceInfoFromHttpServer(marker.getTag().toString()); //place 셋팅
+                getSimplePlaceInfoFromHttpServer(marker.getTag().toString()); //place 셋팅
+                mMap.getUiSettings().setZoomControlsEnabled(false);
                 return false;
             }
         });
@@ -129,8 +131,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                //맵의 아무곳이나 클릭을하면 infoBox를 숨김
+                //맵의 아무곳이나 클릭을하면 infoBox를 숨기고 줌컨트롤 다시 표시
                 hideInfoBox();
+                mMap.getUiSettings().setZoomControlsEnabled(true);
             }
         });
     }
@@ -182,9 +185,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void callCultureSpaceInfo(View view)
+    //infoBox 클릭 시 PlaceInfoActivity를 실행시키는 메소드
+    public void callPlaceInfoActivity(View view)
     {
-        Toast.makeText(this, "fragment clicked", Toast.LENGTH_LONG).show();
+        if(simplePlaceInfo != null) {
+            //Toast.makeText(this, "fragment clicked", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, PlaceInfoActivity.class);
+            intent.putExtra("place_id", simplePlaceInfo.id);
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -252,7 +262,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setMarkers(){
         for(int i=0; i < numMarkers; i++){
             mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.flag))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pointer))
                     .anchor(0.0f, 1.0f)
                     .position(placePositions[i].latLng)
                     .title(placePositions[i].name))
@@ -260,10 +270,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void getPlaceInfoFromHttpServer(String id){
+    private void getSimplePlaceInfoFromHttpServer(String id){
         //전송할 data(json형식과 비슷한 키-값 쌍) 구성하는 구문
         HashMap<String, Object> map = new HashMap<>();
-        map.put("type", "getPlaceInfo");
+        map.put("type", "getSimplePlaceInfo");
         map.put("isAjax", "1");
         map.put("id", id);
 
@@ -275,7 +285,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     try{
                         String successCode = "success";
                         if(object.get("result").toString().equals(successCode)){
-                            place = new Place(object, getApplicationContext());
+                            simplePlaceInfo = new SimplePlaceInfo(object);
                             setInfoBox();
                         }
                         else{
@@ -301,11 +311,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView contactTextView = (TextView) findViewById(R.id.infoBox_contact);
         TextView managerTextView = (TextView) findViewById(R.id.infoBox_category);
 
-        aq.id(iconImageView).image(serverLocation+place.icon_path);
-        nameTextView.setText("장소명 : "+place.name);
-        addressTextView.setText("주소 : "+place.address);
-        contactTextView.setText("연락처 : "+place.contact);
-        managerTextView.setText("분류 : "+place.category);
+        aq.id(iconImageView).image(serverLocation+ simplePlaceInfo.icon_path);
+        nameTextView.setText(simplePlaceInfo.name);
+        addressTextView.setText(simplePlaceInfo.address);
+        contactTextView.setText(simplePlaceInfo.contact);
+        managerTextView.setText(simplePlaceInfo.category);
 
         //infoBox 나타냄
         showInfoBox();
