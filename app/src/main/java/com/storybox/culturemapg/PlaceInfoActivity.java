@@ -2,11 +2,11 @@ package com.storybox.culturemapg;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -20,7 +20,6 @@ import com.androidquery.callback.AjaxStatus;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,8 +176,8 @@ public class PlaceInfoActivity extends AppCompatActivity {
                         if (object.getJSONObject(0).get("result").toString().equals(successCode)) {
                             int total_num_rows = object.getJSONObject(0).getInt("total_num_rows");//쿼리의 총 갯수를 받아야함
                             int now_num_rows = object.getJSONObject(0).getInt("now_num_rows");  //현재 받아온 (표시할) 쿼리의 갯수를 받아야함
-                            writeSimpleShowInfo(object, now_num_rows);
                             call_counter++;
+                            writeSimpleShowInfo(object, now_num_rows);
                         } else {
                             Toast.makeText(PlaceInfoActivity.this, "error : " + object.getJSONObject(0).get("result").toString(), Toast.LENGTH_SHORT).show();
                         }
@@ -199,11 +198,11 @@ public class PlaceInfoActivity extends AppCompatActivity {
 
         for(int i = 1; i <= length; i++){
             try {
-                final View view = inflater.inflate(R.layout.table_row_simple_show_info, null);
-                TextView simple_show_date = (TextView)view.findViewById(R.id.simple_show_date),
-                        simple_show_title = (TextView)view.findViewById(R.id.simple_show_title),
-                        simple_show_category = (TextView)view.findViewById(R.id.simple_show_category),
-                        simple_show_price = (TextView)view.findViewById(R.id.simple_show_price);
+                final View table_row_show_info = inflater.inflate(R.layout.table_row_simple_show_info, null);
+                TextView simple_show_date = (TextView)table_row_show_info.findViewById(R.id.simple_show_date),
+                        simple_show_title = (TextView)table_row_show_info.findViewById(R.id.simple_show_title),
+                        simple_show_category = (TextView)table_row_show_info.findViewById(R.id.simple_show_category),
+                        simple_show_price = (TextView)table_row_show_info.findViewById(R.id.simple_show_price);
 
                 simpleShowInfo.add(new SimpleShowInfo(object.getJSONObject(i)));
 
@@ -212,19 +211,36 @@ public class PlaceInfoActivity extends AppCompatActivity {
                 simple_show_price.setText(simpleShowInfo.get(i-1).price);
                 simple_show_category.setText(simpleShowInfo.get(i-1).category);
                 final int tmp_i = i-1;
-                view.setOnClickListener(new View.OnClickListener() {
+                table_row_show_info.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         callShowInfoActivity(v, Integer.toString(simpleShowInfo.get(tmp_i).id));
                     }
                 });
 
-                inflatedLayout.addView(view);
+                inflatedLayout.addView(table_row_show_info);
             }catch (Exception e){
                 //Toast.makeText(this, "err:"+e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
+        try {
+            int total_num_rows = object.getJSONObject(0).getInt("total_num_rows");
+            if(total_num_rows-((call_counter+1)*5) > -5) {
+                final View bt = inflater.inflate(R.layout.button_more_show, null);
+                Button more_button = (Button) bt.findViewById(R.id.more_show_bt);
+                more_button.setWidth(Resources.getSystem().getDisplayMetrics().widthPixels);
+                more_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        inflatedLayout.removeView(v);
+                        getMoreShowInfo(v);
+                    }
+                });
+                inflatedLayout.addView(bt);
+            }
+        }catch(Exception e){
 
+        }
     }
 
     //infoBox 클릭 시 PlaceInfoActivity를 실행시키는 메소드
@@ -236,5 +252,10 @@ public class PlaceInfoActivity extends AppCompatActivity {
         intent.putExtra("show_id", id);
         startActivity(intent);
         */
+    }
+
+    public void getMoreShowInfo(View v){
+        getShowInfoFromHttpServer(Integer.toString(placeInfo.id));
+
     }
 }
