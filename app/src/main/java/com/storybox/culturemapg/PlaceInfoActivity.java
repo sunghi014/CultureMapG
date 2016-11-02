@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +44,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
         //user code
         serverLocation = "http://chansh2013.cafe24.com";
         serverQueryLocation = serverLocation+"/test.php";
-        photoView = (ImageView) findViewById(R.id.infoActivity_Photo);
+        photoView = (ImageView) findViewById(R.id.placeInfoActivity_Photo);
         Intent intent = getIntent();
         int place_id = intent.getIntExtra("place_id",0);
         getBigPlaceInfoFromHttpServer(Integer.toString(place_id));
@@ -174,7 +173,6 @@ public class PlaceInfoActivity extends AppCompatActivity {
                     try {
                         String successCode = "success";
                         if (object.getJSONObject(0).get("result").toString().equals(successCode)) {
-                            int total_num_rows = object.getJSONObject(0).getInt("total_num_rows");//쿼리의 총 갯수를 받아야함
                             int now_num_rows = object.getJSONObject(0).getInt("now_num_rows");  //현재 받아온 (표시할) 쿼리의 갯수를 받아야함
                             call_counter++;
                             writeSimpleShowInfo(object, now_num_rows);
@@ -243,15 +241,12 @@ public class PlaceInfoActivity extends AppCompatActivity {
         }
     }
 
-    //infoBox 클릭 시 PlaceInfoActivity를 실행시키는 메소드
     public void callShowInfoActivity(View view, String id)
     {
-        Toast.makeText(this, "clicked id=" + id, Toast.LENGTH_LONG).show();
-        /*
+        //Toast.makeText(this, "clicked id=" + id, Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ShowInfoActivity.class);
         intent.putExtra("show_id", id);
         startActivity(intent);
-        */
     }
 
     public void getMoreShowInfo(View v){

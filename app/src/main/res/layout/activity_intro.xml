@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/anim_logo_culturemap"
         android:tint="#FFFFFF"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginTop="-80dp" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -18,6 +19,13 @@
         android:src="@drawable/anim_logo_g"
         android:tint="#FFFFFF"
         android:layout_gravity="center"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="50dp"
         android:id="@+id/anim_logo_g" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/intro_box"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"/>
 </FrameLayout>

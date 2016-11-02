@@ -12,7 +12,7 @@ import android.widget.ImageView;
  */
 
 public class IntroActivity extends AppCompatActivity {
-    Animation translateAnim;
+    Animation alphaAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
 
         ImageView anim_logo_g = (ImageView)findViewById(R.id.anim_logo_g);
-        translateAnim = AnimationUtils.loadAnimation(this, R.anim.intro_animation);
+        alphaAnim = AnimationUtils.loadAnimation(this, R.anim.intro_animation);
 
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
@@ -41,8 +41,8 @@ public class IntroActivity extends AppCompatActivity {
             }
         };
 
-        translateAnim.setAnimationListener(animationListener);
+        alphaAnim.setAnimationListener(animationListener);
 
-        anim_logo_g.startAnimation(translateAnim);
+        anim_logo_g.startAnimation(alphaAnim);
     }
 }

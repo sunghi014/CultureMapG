@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/bg"
+    android:layout_gravity="center">
+    <TextView
+        android:text="광주 전시·공연 스케줄"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="30dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"/>
+    <TextView
+        android:text="날짜를 선택하세요"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:id="@+id/calendar_text_end"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:id="@+id/calendar_wrapper">
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8FFFFFFF"
+        android:id="@+id/calendarView"
+        android:minDate="01/01/2014"
+        android:maxDate="12/31/2030"
+        android:showWeekNumber="false"
+        android:selectedWeekBackgroundColor="#9F000000"
+        android:focusedMonthDateColor="#FFFFFF"
+        android:unfocusedMonthDateColor="#CCCCCC"
+        android:layout_gravity="center" />
+    </LinearLayout>
+</GridLayout>
