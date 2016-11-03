@@ -105,7 +105,7 @@ public class PlaceInfoActivity extends AppCompatActivity {
                             setInfomations(true, true);
                         }
                         else{
-                            Toast.makeText(PlaceInfoActivity.this, "error : " + object.get("result").toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PlaceInfoActivity.this, "관리자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                             setInfomations(true, false);
                         }
                     }catch(Exception e){
@@ -177,13 +177,13 @@ public class PlaceInfoActivity extends AppCompatActivity {
                             call_counter++;
                             writeSimpleShowInfo(object, now_num_rows);
                         } else {
-                            Toast.makeText(PlaceInfoActivity.this, "error : " + object.getJSONObject(0).get("result").toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PlaceInfoActivity.this, "공연 및 전시 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Toast.makeText(PlaceInfoActivity.this, "error in ajax callback method : " + e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(PlaceInfoActivity.this, "관리자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlaceInfoActivity.this, "공연 및 전시 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                     setInfomations(true, false);
                 }
             }

@@ -3,12 +3,17 @@ package com.storybox.culturemapg;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +22,9 @@ import com.androidquery.callback.AjaxCallback;
 import com.androidquery.callback.AjaxStatus;
 
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -36,6 +43,9 @@ public class DailyShowScheduleActivity extends AppCompatActivity {
     private int call_counter;
     private String serverLocation,serverQueryLocation;
 
+    int realWidth;
+    int realHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +53,8 @@ public class DailyShowScheduleActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         full_date = intent.getStringExtra("full_date");
+
+        getDisplaySize();
 
         TextView dayOfWeek,monthOfYear,dayOfMonth,year;
         dayOfWeek = (TextView) findViewById(R.id.daily_show_schedule_activity_day_of_week);
@@ -85,6 +97,7 @@ public class DailyShowScheduleActivity extends AppCompatActivity {
         year.setText(intent.getStringExtra("year"));
 
 
+
         serverLocation = "http://chansh2013.cafe24.com";
         serverQueryLocation = serverLocation+"/test.php";
 
@@ -116,7 +129,7 @@ public class DailyShowScheduleActivity extends AppCompatActivity {
                             call_counter++;
                             writeSimpleShowInfo(object, now_num_rows);
                         } else {
-                            Toast.makeText(getApplicationContext(), "error : " + object.getJSONObject(0).get("result").toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "정보가 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), "error in ajax callback method : " + e.toString(), Toast.LENGTH_SHORT).show();
@@ -190,5 +203,36 @@ public class DailyShowScheduleActivity extends AppCompatActivity {
     public void getMoreShowInfo(View v){
         getShowInfoFromHttpServer(full_date);
 
+    }
+
+    public void getDisplaySize(){
+        Display display = DailyShowScheduleActivity.this.getWindowManager().getDefaultDisplay();
+
+        if (Build.VERSION.SDK_INT >= 17){
+            //new pleasant way to get real metrics
+            DisplayMetrics realMetrics = new DisplayMetrics();
+            display.getRealMetrics(realMetrics);
+            realWidth = realMetrics.widthPixels;
+            realHeight = realMetrics.heightPixels;
+
+        } else if (Build.VERSION.SDK_INT >= 14) {
+            //reflection for this weird in-between time
+            try {
+                Method mGetRawH = Display.class.getMethod("getRawHeight");
+                Method mGetRawW = Display.class.getMethod("getRawWidth");
+                realWidth = (Integer) mGetRawW.invoke(display);
+                realHeight = (Integer) mGetRawH.invoke(display);
+            } catch (Exception e) {
+                //this may not be 100% accurate, but it's all we've got
+                realWidth = display.getWidth();
+                realHeight = display.getHeight();
+                Log.e("Display Info", "Couldn't use reflection to get the real display metrics.");
+            }
+
+        } else {
+            //This should be close, as lower API devices should not have window navigation bars
+            realWidth = display.getWidth();
+            realHeight = display.getHeight();
+        }
     }
 }
